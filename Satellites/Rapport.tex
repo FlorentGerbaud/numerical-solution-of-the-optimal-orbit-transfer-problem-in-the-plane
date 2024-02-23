@@ -1,0 +1,272 @@
+\documentclass{article}
+\usepackage[backend=biber, style=authoryear, sorting=nyt, style=numeric]{biblatex}
+\usepackage{url}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+
+\usepackage{background}
+\usepackage{tikz}
+\usepackage{geometry}
+\usetikzlibrary{shapes, arrows, positioning}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage{titletoc}
+\usepackage{titlesec}
+\usepackage{lipsum}
+\usepackage{tocloft}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage[section]{placeins}
+\usepackage{caption}
+\usepackage{textcomp}
+\usepackage{subcaption}
+\usepackage[edges]{forest}
+%\usepackage[superscript,biblabel]{cite}
+\usepackage{fontawesome5}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\usepackage[simplified]{pgf-umlcd}
+\usepackage{enumitem}
+\usepackage{adjustbox}
+\usepackage{listings}
+\usetikzlibrary{shapes.geometric, arrows}
+
+\tikzset{
+	startstop/.style={
+		rectangle,
+		rounded corners,
+		minimum width=3cm,
+		minimum height=1cm,
+		text centered,
+		draw=black,
+		fill=red!30
+	},
+	io/.style={
+		trapezium,
+		trapezium stretches=true, % A later addition
+		trapezium left angle=70,
+		trapezium right angle=110,
+		minimum width=3cm,
+		minimum height=1cm,
+		text centered,
+		draw=black,
+		fill=blue!30
+	},
+	process/.style={
+		rectangle,
+		minimum width=3cm,
+		minimum height=1cm,
+		text centered,
+		text width=3cm,
+		draw=black,
+		fill=orange!30
+	},
+	decision/.style={
+		diamond,
+		minimum width=3cm,
+		minimum height=1cm,
+		text centered,
+		draw=black,
+		fill=green!30
+	},
+	arrow/.style={
+		thick,
+		->,
+		>=stealth
+	}
+}
+
+\renewcommand{\cfttoctitlefont}{\hfill\large\bfseries\fontsize{20}{24}\selectfont}
+\renewcommand{\cftaftertoctitle}{\hfill\mbox{}}
+
+\definecolor{mydarkyellow}{HTML}{87CEEB}
+
+\backgroundsetup{
+	scale=1,
+	color=black,
+	opacity=0.5,
+	angle=0,
+	contents={
+		\ifnum\value{page}=1
+		\begin{tikzpicture}[remember picture,overlay]
+			\path [fill=mydarkyellow] (current page.south west) rectangle (current page.north east);
+		\end{tikzpicture}
+		\fi
+	}
+}
+
+\title{\textbf{\Huge Polytech Nice}\\[1cm]
+	\textbf{\LARGE Project report}\\[2cm]
+	\hrule height 1pt
+	\vspace{0.5cm}
+	\textbf{\Large numerical solution of the optimal orbit transfer problem in the 
+		plane}\\[0.5cm]
+	\hrule height 1pt
+	\vspace{3cm}
+	\small{\today}}
+
+\author{
+	\begin{tabular}{c}
+		Gerbaud Florent \\
+	\end{tabular}
+}
+
+\date{}
+
+\begin{document}
+	\maketitle
+	\vspace{3cm}
+	\begin{center}
+		\includegraphics[width=5cm]{Polytech.png}
+	\end{center}
+	\newpage % ajout d'un saut de page
+	% Table des matières
+	\renewcommand{\contentsname}{
+		\hfill
+		\begin{tikzpicture}
+			\node[draw, fill=white, inner sep=20pt,line width=1.5pt] {\fontsize{30}{36}\selectfont\bfseries Table des matières};
+		\end{tikzpicture}
+		\hfill
+	}
+	\tableofcontents
+	\listofalgorithms
+	\newpage
+	
+	\section{Theory}
+	
+	\subsection{Nomenclature}
+		\begin{itemize}
+			\item r := satellite radial distance attracting body
+			\item u := radial velocity
+			\item v := tangential speed
+			\item m := satellite mass
+			\item $\frac{\partial m}{\partial t} = \dot{m} = -\frac{T}{g_0 \cdot Isp} := $  dm motor mass flow
+			\item $\phi := $ angle of thrust direction with r
+			\item $\mu := $  gravitational constant of the attracting body
+			\item $\theta := $ the angle formed by r with r(0)
+		\end{itemize}
+		
+		\subsection{Conditions initiales et finales:}
+		\[ \boxed{\begin{aligned}
+				& r(0)=r_0, \quad u(0)=0, \quad v(0)=\sqrt{\frac{\mu}{r_0}} \\
+				& r\left(t_f\right)=r_f, \quad u\left(t_f\right)=0, \quad v\left(t_f\right)=\sqrt{\frac{\mu}{r_f}}
+		\end{aligned}} \]
+	 
+		
+		\subsection{Hamiltonien et dynamique de l'état adioint:}
+		\begin{align*}
+			& \dot{x}=\begin{bmatrix}
+				\dot{r} \\
+				\dot{u} \\
+				\dot{v}
+			\end{bmatrix}=f(x, t, \phi)=\begin{bmatrix}
+				u \\ \\
+				\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi) \\ \\
+				-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)
+			\end{bmatrix} \\ \\
+			& \lambda^T=\begin{bmatrix}
+				\lambda_r & \lambda_u & \lambda_v
+			\end{bmatrix} \\ \\
+			& H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right) \\ \\
+			& \dot{\lambda}=\begin{bmatrix}
+				\dot{\lambda}_r \\
+				\dot{\lambda}_u \\
+				\dot{\lambda}_v
+			\end{bmatrix}=-\frac{\partial f^T}{\partial x} \lambda=\begin{bmatrix}
+				-\lambda_u\left(-\frac{v^2}{r^2}+\frac{2 \mu}{r^3}\right)-\lambda_v\left(\frac{u v}{r^2}\right) \\ \\
+				-\lambda_r+\lambda_v \frac{v}{r} \\ \\
+				-\lambda_u \frac{2 v}{r}+\lambda_v \frac{u}{r}
+			\end{bmatrix}
+		\end{align*}
+		
+		\subsection{Equation de la commande}
+		\begin{align*}
+			& H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right) \\ \\
+			& \frac{\partial H}{\partial \phi}=\lambda_u\left(\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right)-\lambda_v\left(\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)=0 \\ \\
+			& \frac{\partial H}{\partial \phi}=0 \Leftrightarrow \lambda_u \cos (\phi)-\lambda_v \sin (\phi)=0 \Rightarrow \tan (\phi)=\frac{\lambda_u}{\lambda_v} \\
+		\end{align*}
+		
+		\subsection{Condition d'optimalité sur $t_f$}
+		\[
+		\\
+		\left[H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right)\right]_{t_j}=0
+		\\ \] \newline
+		
+		Cette condition peut être remplacée par la condition équivalente à $t_0=0$:
+		\[
+		\left[\lambda^T \times \lambda\right]_{t_0}=1
+		\]
+		
+		\subsection{Formulation du problème aux deux bouts}
+		Inconnues à $t=t_0=0$: $\lambda(t_0)^T = [\lambda_r \ \lambda_u \ \lambda_v]_{t_0}$ \\
+		Inconnue à $t=t_f$: $t_f$
+		Système d'équations à résoudre:
+		\begin{align*}
+			g(\lambda_{r0}, \lambda_{u0}, \lambda_{v0}, t_f) &= \left[\begin{array}{c}
+				r(t_f) - r_f \\ \\
+				u(t_f) \\ \\
+				v(t_f) - \sqrt{\frac{\mu}{r_f}} \\ \\
+				\left[1 + \lambda^T f\right]_{t_f}
+			\end{array}\right] = 0
+		\end{align*}
+		
+	\section{implementation}
+	
+	\subsection{Problem data declaration}
+	
+	\begin{algorithm}[H]
+		\caption{Problem data declaration}\label{alg:satellite_maneuvering}
+		\begin{algorithmic}
+			%\State \textbf{Input:} \\
+			%\begin{itemize}
+			%\State AU = 149597870690; // 1 astronomical unit in m
+			%\State $r0 = AU$; // Initial orbit radius in m
+			%\State $rf = 1.5 \times AU$; // Final target orbit radius in m
+			%\State $m0 = 1000$; // Satellite mass at t0 in kg
+			%\State $T = 0.1:0.1:0.6$; // Engine thrust in N (creates a vector from 0.1 to 0.6 with a step of 0.01)
+			%\State $g0 = 9.80665$; // Earth gravity in ms^-2
+			%\State $Isp = 3000$; // Specific impulse of the engine in s
+			%\State $\mu_{\text{body}} = 1.32712440018 \times 10^{20}$; // Gravitational constant of the sun in m^3s^-2
+			%\end{itemize}
+			\State \textbf{Data:} \\
+			\begin{itemize}[]
+				\item \textbf{\underline{Initial Conditions:}}
+				\begin{itemize}
+					\item $AU = 149597870690$
+					\item $r_0 = AU$
+					\item $u_0 = 0$
+					\item $v_0 = \sqrt{\frac{\mu_{\text{body}}}{r_0}}$
+					\item$ m_0=1000$
+				\end{itemize}
+				\item \textbf{\underline{Final Conditions:}}
+				\begin{itemize}
+					\item $r_f = 1.5 \times AU$
+					\item $u_f = 0$
+					\item $v_f = \sqrt{\frac{\mu_{\text{body}}}{r_f}}$
+				\end{itemize}
+				\item \textbf{\underline{Power}}:
+				\begin{itemize}
+					\item Set $T$ to an array containing values from $0.1$ to $0.6$ with a step size of $0.1$.
+				\end{itemize}
+				\item \textbf{\underline{Earth gravity}}
+				\begin{itemize}
+					\item $g_0 = 9.80665$
+				\end{itemize}
+				\item \textbf{\underline{Specific motor impulse}}
+				\begin{itemize}
+					\item $Isp = 3000$
+				\end{itemize}
+				\item \textbf{\underline{sun's gravitational constant}}
+				\begin{itemize}
+					\item $\mu_{body} = 1.32712440018e+20$
+				\end{itemize}
+			\end{itemize}
+		\end{algorithmic}
+	\end{algorithm}
+	
+	
+\end{document}
