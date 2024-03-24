@@ -6,6 +6,7 @@
 \contentsline {subsection}{\numberline {1.4}Equation de la commande}{4}{subsection.1.4}%
 \contentsline {subsection}{\numberline {1.5}Condition d'optimalité sur $t_f$}{4}{subsection.1.5}%
 \contentsline {subsection}{\numberline {1.6}Formulation du problème aux deux bouts}{4}{subsection.1.6}%
-\contentsline {section}{\numberline {2}implementation}{5}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Problem data declaration}{5}{subsection.2.1}%
+\contentsline {section}{\numberline {2}Implementation}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Problem Data declaration}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}System Dynamics Resolution function}{6}{subsection.2.2}%
 \contentsfinish 

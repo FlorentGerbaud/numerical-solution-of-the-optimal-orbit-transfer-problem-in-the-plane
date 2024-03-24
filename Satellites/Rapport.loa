@@ -1,1 +1,6 @@
 \contentsline {algorithm}{\numberline {1}{\ignorespaces Problem data declaration}}{5}{algorithm.1}%
+\contentsline {algorithm}{\numberline {2}{\ignorespaces Problem data declaration}}{5}{algorithm.2}%
+\contentsline {algorithm}{\numberline {3}{\ignorespaces Dynamical model of a spacecraft}}{6}{algorithm.3}%
+\contentsline {algorithm}{\numberline {4}{\ignorespaces Function \texttt {dynpol}}}{7}{algorithm.4}%
+\contentsline {algorithm}{\numberline {5}{\ignorespaces Function \texttt {gnultmin}}}{8}{algorithm.5}%
+\contentsline {algorithm}{\numberline {6}{\ignorespaces Control History Calculation}}{9}{algorithm.6}%

@@ -134,6 +134,7 @@
 	}
 	\tableofcontents
 	\listofalgorithms
+	\listoffigures
 	\newpage
 	
 	\section{Theory}
@@ -214,9 +215,7 @@
 			\end{array}\right] = 0
 		\end{align*}
 		
-	\section{implementation}
-	
-	\subsection{Problem data declaration}
+	\section{Implementation}
 	
 	\begin{algorithm}[H]
 		\caption{Problem data declaration}\label{alg:satellite_maneuvering}
@@ -267,6 +266,191 @@
 			\end{itemize}
 		\end{algorithmic}
 	\end{algorithm}
+	
+	
+	\subsection{Problem Data declaration}
+	
+	In this code, we have to normalize the data due to the problem of orders of magnitude. This allows us to make the resolution easier and more accurate for the solver.
+	
+	\begin{algorithm}[H]
+		\caption{Problem data declaration}\label{alg:satellite_maneuvering}
+		\begin{algorithmic}
+			
+			%\end{itemize}
+			\State \textbf{Normalized unit:} \\
+			\begin{itemize}[]
+				\item \textbf{\underline{Unit:}}
+				\begin{itemize}
+					\item $DU = r_0$; % Distance unitaire
+					\item $VU = v_0$; % Vitesse unitaire
+					\item $MU = m_0$; % Masse unitaire
+					\item $TU = \frac{DU}{VU}$; % Temps unitaire
+					\item $FU = \frac{MU \times DU}{TU^2}$; %
+				\end{itemize}
+			\end{itemize}
+		\end{algorithmic}
+	\end{algorithm}
+	
+
+	\newpage
+	\subsection{System Dynamics Resolution function}	
+	\begin{algorithm}[H]
+		\caption{Dynamical model of a spacecraft}
+		\label{alg:dynamical_model}
+		\begin{algorithmic}
+			\State \textbf{\underline{Definition of the struct:}}
+			\begin{algorithmic}
+				\State $\text{param}.DU = DU;$
+				\State $\text{param}.VU = VU;$
+				\State $\text{param}.MU = MU;$
+				\State $\text{param}.TU = TU;$
+				\State $\text{param}.FU = FU;$
+				\State $\text{param}.\mu_{\text{body}} = \frac{\mu_{\text{body}}}{\text{param.DU}^3 \times \text{param.TU}^2};$
+				\State $\text{param}.T = \frac{T(1)}{\text{param.FU}};$
+				\State $\text{param}.g0_{\text{Isp}} = \frac{g0 \times Isp}{\text{param.VU}};$
+				\State $\text{param}.m0 = \frac{m0}{\text{param.MU}};$
+				\State $\text{param}.t0 = 0;$
+				\State $\text{param}.x_{t0} = \begin{bmatrix} \frac{r0}{\text{param.DU}} \\ \frac{u0}{\text{param.VU}} \\ \frac{v0}{\text{param.VU}} \end{bmatrix};$
+				\State $\text{param}.x_{tf} = \begin{bmatrix} \frac{rf}{\text{param.DU}} \\ \frac{uf}{\text{param.VU}} \\ \frac{vf}{\text{param.VU}} \end{bmatrix};$
+			\end{algorithmic}
+			
+		\end{algorithmic}
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{Function \texttt{dynpol}}
+		\label{alg:dynpol}
+		\begin{algorithmic}
+			\State \textbf{Input:}
+			\begin{itemize}
+				\item $t$: A given time step
+				\item $x = \begin{bmatrix} r \\ u \\ v \\ \lambda_r \\ \lambda_u \\ \lambda_v \end{bmatrix}$: the state of the dynamic system vector
+				
+			\end{itemize}
+			\Function{$dynpol$}{$t$, $x$}
+			\State $\mu = \text{param}.\mu_{\text{body}}$
+			\State $T = \text{param}.T$;
+			\State $g0_{\text{Isp}} = \text{param}.g0_{\text{Isp}}$
+			\State $m0 = \text{param}.m0$;
+			\State $t0 = \text{param}.t0$;
+			\State $dm = -\frac{T}{g0_{\text{Isp}}}$
+			\State $\phi = \arctan\left(\frac{x(5)}{x(6)}\right)$
+			\State $dx = x$;
+			\State $dx(1) = x(2)$;
+			\State $dx(2) = \frac{x(3)^2}{x(1)} - \frac{\mu}{x(1)^2} + \frac{T}{m0 + dm \times t} \times \sin(\phi)$
+			\State $dx(3) = -\frac{x(2) \times x(3)}{x(1)} + \frac{T}{m0 + dm \times t} \times \cos(\phi)$
+			\State $dx(4) = -x(5) \times \left(-\frac{x(3)^2}{x(1)^2} + 2 \times \frac{\mu}{x(1)^3}\right) - x(6) \times \frac{x(2) \times x(3)}{x(1)^2}$
+			\State $dx(5) = -x(4) + x(6) \times \frac{x(3)}{x(1)};$
+			\State $dx(6) = -x(5) \times (2 \times \frac{x(3)}{x(1)}) + x(6) \times \frac{x(2)}{x(1)};$
+			\EndFunction
+		\end{algorithmic}
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{Function \texttt{gnultmin}}
+		\begin{algorithmic}
+			\State \textbf{Input:}
+			\begin{itemize}
+				\item $p = \begin{bmatrix} t_f \\ \lambda_{r_0} \\ \lambda_{u_0} \\ \lambda_{v_0} \end{bmatrix}$: the state of the dynamic system vector
+			\end{itemize}
+			\Function{gnmt}{$p$}
+			\State $t0 = \text{param}.t0;$
+			\State $r0 = \text{param}.x_{t0}(1);$
+			\State $u0 = \text{param}.x_{t0}(2);$
+			\State $v0 = \text{param}.x_{t0}(3);$
+			\State $rf = \text{param}.x_{tf}(1);$
+			\State $uf = \text{param}.x_{tf}(2);$
+			\State $vf = \text{param}.x_{tf}(3);$
+			\State $y0 = [r0 \quad u0 \quad v0 \quad p(2) \quad p(3) \quad p(4)];$
+			\State $tf = p(1);$
+			\State $\text{atol} = 1e-10;$
+			\State $\text{rtol} = 1e-10;$
+			\State $y = \text{ode}("rk", y0, t0, tf, \text{dynpol}, \text{atol}, \text{rtol});$
+			\State $gnmt = p;$
+			\State $gnmt(1) = y(1) - rf;$
+			\State $gnmt(2) = y(2) - uf;$
+			\State $gnmt(3) = y(3) - \sqrt{\text{param}.\mu_{\text{body}} / rf};$
+			\State $gnmt(4) = p(2)^2 + p(3)^2 + p(4)^2 - 1;$
+			\EndFunction
+		\end{algorithmic}
+	\end{algorithm}
+	
+	The function \texttt{gnultmin()} takes \( p \) as a parameter and returns the column vector \( gnmt \).
+	
+	Absolute and relative tolerances of \( 10^{-10} \) have been chosen for solving the differential equation using the function \texttt{ode()}. If the order of magnitude of the relative tolerance is smaller than \( 10^{-10} \), Scilab displays a warning message and increases this tolerance to have an order of magnitude of \( 10^{-10} \).
+	
+	We aim to achieve better accuracy than that of the solver.
+	
+	\begin{algorithm}[H]
+		\caption{Control History Calculation}
+		\begin{algorithmic}[1]
+			\For{$i = 1$ \textbf{to} $6$}
+			\State $param.T \gets \frac{T(i)}{param.FU}$
+			\State $[x, v, info] \gets \text{fsolve}(p0, gnultmin)$
+			\State $\text{disp}(info)$
+			\State $\text{disp}(v)$
+			\State $InitialCond \gets [\text{param.x\_t0(1)}; \text{param.x\_t0(2)}; \text{param.x\_t0(3)}; x(2); x(3); x(4)]$
+			\State $t \gets 0:0.01:x(1)$
+			\State $sol \gets \text{ode}(InitialCond, param.t0, t, dynpol)$
+			\State $timeInDays \gets t \times \frac{param.TU}{86400}$
+			\State $AngleInDegrees \gets \text{atan}(sol(5,:), sol(6,:)) \times \frac{360}{2\pi}$
+			\State $\text{figure}$
+			\State $\text{plot}(timeInDays, AngleInDegrees)$
+			\State $\text{xlabel}('Time (days)')$
+			\State $\text{ylabel}('Control in deg')$
+			\State $powerInNewton \gets param.T \times param.FU$
+			\State $\text{xgrid}$
+			\State $h \gets \text{gca}()$
+			\State $h.\text{background} \gets \text{color}('white')$
+			\State $\text{title}('Control history for ' + \text{string}(powerInNewton) + 'N')$
+			\EndFor
+		\end{algorithmic}
+	\end{algorithm}
+	
+	
+	Each thrust (in Newtons) is contained in \( T \). We proceed with increasing thrusts, starting with the lowest one (here 0.1), so the thrust duration decreases. The very first time the function \( gnultmin() \) is passed as a parameter to the function \( fsolve() \), i.e., to calculate the trajectory with the first thrust, we use \( p_0 \) for the initialization of \( gnultmin() \). The result of the first use of \( fsolve() \) called \( p_1 \) will serve for the second time when we pass \( gnultmin() \) as a parameter to \( fsolve() \), hence for calculating the trajectory with the second thrust. Thus, for each thrust except the first one, we use the result of \( fsolve() \) from the previous thrust. With \( p_0 \), we can then obtain \( p_i \) for all \( i \in [1; 6] \).
+	
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=\textwidth]{figure0.png}
+		\caption{thrusts of 0.1N}
+		\label{fig:0.1}
+	\end{figure}
+	
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=\textwidth]{figure1.png}
+		\caption{thrusts of 0.2N}
+		\label{fig:0.2}
+	\end{figure}
+	
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{figure2.png}
+		\caption{thrusts of 0.3N}
+		\label{fig:0.3}
+	\end{figure}
+	
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{figure3.png}
+		\caption{thrusts of 0.4N}
+		\label{fig:0.4}
+	\end{figure}
+	
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{figure4.png}
+		\caption{thrusts of 0.5N}
+		\label{fig:0.5}
+	\end{figure}
+	
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=0.7\textwidth]{figure5.png}
+		\caption{thrusts of 0.6N}
+		\label{fig:0.6}
+	\end{figure}
 	
 	
 \end{document}
