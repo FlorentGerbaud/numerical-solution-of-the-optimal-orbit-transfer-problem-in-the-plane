@@ -128,7 +128,7 @@
 	\renewcommand{\contentsname}{
 		\hfill
 		\begin{tikzpicture}
-			\node[draw, fill=white, inner sep=20pt,line width=1.5pt] {\fontsize{30}{36}\selectfont\bfseries Table des matières};
+			\node[draw, fill=white, inner sep=20pt,line width=1.5pt] {\fontsize{30}{36}\selectfont\bfseries Table of Contents};
 		\end{tikzpicture}
 		\hfill
 	}
@@ -140,81 +140,81 @@
 	\section{Theory}
 	
 	\subsection{Nomenclature}
-		\begin{itemize}
-			\item r := satellite radial distance attracting body
-			\item u := radial velocity
-			\item v := tangential speed
-			\item m := satellite mass
-			\item $\frac{\partial m}{\partial t} = \dot{m} = -\frac{T}{g_0 \cdot Isp} := $  dm motor mass flow
-			\item $\phi := $ angle of thrust direction with r
-			\item $\mu := $  gravitational constant of the attracting body
-			\item $\theta := $ the angle formed by r with r(0)
-		\end{itemize}
-		
-		\subsection{Conditions initiales et finales:}
-		\[ \boxed{\begin{aligned}
-				& r(0)=r_0, \quad u(0)=0, \quad v(0)=\sqrt{\frac{\mu}{r_0}} \\
-				& r\left(t_f\right)=r_f, \quad u\left(t_f\right)=0, \quad v\left(t_f\right)=\sqrt{\frac{\mu}{r_f}}
-		\end{aligned}} \]
-	 
-		
-		\subsection{Hamiltonien et dynamique de l'état adioint:}
-		\begin{align*}
-			& \dot{x}=\begin{bmatrix}
-				\dot{r} \\
-				\dot{u} \\
-				\dot{v}
-			\end{bmatrix}=f(x, t, \phi)=\begin{bmatrix}
-				u \\ \\
-				\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi) \\ \\
-				-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)
-			\end{bmatrix} \\ \\
-			& \lambda^T=\begin{bmatrix}
-				\lambda_r & \lambda_u & \lambda_v
-			\end{bmatrix} \\ \\
-			& H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right) \\ \\
-			& \dot{\lambda}=\begin{bmatrix}
-				\dot{\lambda}_r \\
-				\dot{\lambda}_u \\
-				\dot{\lambda}_v
-			\end{bmatrix}=-\frac{\partial f^T}{\partial x} \lambda=\begin{bmatrix}
-				-\lambda_u\left(-\frac{v^2}{r^2}+\frac{2 \mu}{r^3}\right)-\lambda_v\left(\frac{u v}{r^2}\right) \\ \\
-				-\lambda_r+\lambda_v \frac{v}{r} \\ \\
-				-\lambda_u \frac{2 v}{r}+\lambda_v \frac{u}{r}
-			\end{bmatrix}
-		\end{align*}
-		
-		\subsection{Equation de la commande}
-		\begin{align*}
-			& H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right) \\ \\
-			& \frac{\partial H}{\partial \phi}=\lambda_u\left(\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right)-\lambda_v\left(\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)=0 \\ \\
-			& \frac{\partial H}{\partial \phi}=0 \Leftrightarrow \lambda_u \cos (\phi)-\lambda_v \sin (\phi)=0 \Rightarrow \tan (\phi)=\frac{\lambda_u}{\lambda_v} \\
-		\end{align*}
-		
-		\subsection{Condition d'optimalité sur $t_f$}
-		\[
-		\\
-		\left[H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right)\right]_{t_j}=0
-		\\ \] \newline
-		
-		Cette condition peut être remplacée par la condition équivalente à $t_0=0$:
-		\[
-		\left[\lambda^T \times \lambda\right]_{t_0}=1
-		\]
-		
-		\subsection{Formulation du problème aux deux bouts}
-		Inconnues à $t=t_0=0$: $\lambda(t_0)^T = [\lambda_r \ \lambda_u \ \lambda_v]_{t_0}$ \\
-		Inconnue à $t=t_f$: $t_f$
-		Système d'équations à résoudre:
-		\begin{align*}
-			g(\lambda_{r0}, \lambda_{u0}, \lambda_{v0}, t_f) &= \left[\begin{array}{c}
-				r(t_f) - r_f \\ \\
-				u(t_f) \\ \\
-				v(t_f) - \sqrt{\frac{\mu}{r_f}} \\ \\
-				\left[1 + \lambda^T f\right]_{t_f}
-			\end{array}\right] = 0
-		\end{align*}
-		
+	\begin{itemize}
+		\item r := satellite radial distance attracting body
+		\item u := radial velocity
+		\item v := tangential speed
+		\item m := satellite mass
+		\item $\frac{\partial m}{\partial t} = \dot{m} = -\frac{T}{g_0 \cdot Isp} := $  dm motor mass flow
+		\item $\phi := $ angle of thrust direction with r
+		\item $\mu := $  gravitational constant of the attracting body
+		\item $\theta := $ the angle formed by r with r(0)
+	\end{itemize}
+	
+	\subsection{Initial and Final Conditions:}
+	\[ \boxed{\begin{aligned}
+			& r(0)=r_0, \quad u(0)=0, \quad v(0)=\sqrt{\frac{\mu}{r_0}} \\
+			& r\left(t_f\right)=r_f, \quad u\left(t_f\right)=0, \quad v\left(t_f\right)=\sqrt{\frac{\mu}{r_f}}
+	\end{aligned}} \]
+	
+	
+	\subsection{Hamiltonian and Adjoint State Dynamics:}
+	\begin{align*}
+		& \dot{x}=\begin{bmatrix}
+			\dot{r} \\
+			\dot{u} \\
+			\dot{v}
+		\end{bmatrix}=f(x, t, \phi)=\begin{bmatrix}
+			u \\ \\
+			\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi) \\ \\
+			-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)
+		\end{bmatrix} \\ \\
+		& \lambda^T=\begin{bmatrix}
+			\lambda_r & \lambda_u & \lambda_v
+		\end{bmatrix} \\ \\
+		& H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right) \\ \\
+		& \dot{\lambda}=\begin{bmatrix}
+			\dot{\lambda}_r \\
+			\dot{\lambda}_u \\
+			\dot{\lambda}_v
+		\end{bmatrix}=-\frac{\partial f^T}{\partial x} \lambda=\begin{bmatrix}
+			-\lambda_u\left(-\frac{v^2}{r^2}+\frac{2 \mu}{r^3}\right)-\lambda_v\left(\frac{u v}{r^2}\right) \\ \\
+			-\lambda_r+\lambda_v \frac{v}{r} \\ \\
+			-\lambda_u \frac{2 v}{r}+\lambda_v \frac{u}{r}
+		\end{bmatrix}
+	\end{align*}
+	
+	\subsection{Control Equation}
+	\begin{align*}
+		& H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right) \\ \\
+		& \frac{\partial H}{\partial \phi}=\lambda_u\left(\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right)-\lambda_v\left(\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)=0 \\ \\
+		& \frac{\partial H}{\partial \phi}=0 \Leftrightarrow \lambda_u \cos (\phi)-\lambda_v \sin (\phi)=0 \Rightarrow \tan (\phi)=\frac{\lambda_u}{\lambda_v} \\
+	\end{align*}
+	
+	\subsection{Optimality Condition on $t_f$}
+	\[
+	\\
+	\left[H=1+\lambda^T f=1+\lambda_r u+\lambda_u\left(\frac{v^2}{r}-\frac{\mu}{r^2}+\frac{T}{m_0+\dot{m} \times t} \sin (\phi)\right)+\lambda_v\left(-\frac{u v}{r}+\frac{T}{m_0+\dot{m} \times t} \cos (\phi)\right)\right]_{t_j}=0
+	\\ \] \newline
+	
+	This condition can be replaced by the equivalent condition at $t_0=0$:
+	\[
+	\left[\lambda^T \times \lambda\right]_{t_0}=1
+	\]
+	
+	\subsection{Two-Point Boundary Value Problem Formulation}
+	Unknowns at $t=t_0=0$: $\lambda(t_0)^T = [\lambda_r \ \lambda_u \ \lambda_v]_{t_0}$ \\
+	Unknown at $t=t_f$: $t_f$
+	System of equations to solve:
+	\begin{align*}
+		g(\lambda_{r0}, \lambda_{u0}, \lambda_{v0}, t_f) &= \left[\begin{array}{c}
+			r(t_f) - r_f \\ \\
+			u(t_f) \\ \\
+			v(t_f) - \sqrt{\frac{\mu}{r_f}} \\ \\
+			\left[1 + \lambda^T f\right]_{t_f}
+		\end{array}\right] = 0
+	\end{align*}
+	
 	\section{Implementation}
 	
 	\begin{algorithm}[H]
@@ -230,7 +230,6 @@
 			%\State $g0 = 9.80665$; // Earth gravity in ms^-2
 			%\State $Isp = 3000$; // Specific impulse of the engine in s
 			%\State $\mu_{\text{body}} = 1.32712440018 \times 10^{20}$; // Gravitational constant of the sun in m^3s^-2
-			%\end{itemize}
 			\State \textbf{Data:} \\
 			\begin{itemize}[]
 				\item \textbf{\underline{Initial Conditions:}}

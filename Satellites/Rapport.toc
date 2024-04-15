@@ -1,11 +1,11 @@
 \babel@toc {british}{}\relax 
 \contentsline {section}{\numberline {1}Theory}{3}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Nomenclature}{3}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}Conditions initiales et finales:}{3}{subsection.1.2}%
-\contentsline {subsection}{\numberline {1.3}Hamiltonien et dynamique de l'état adioint:}{3}{subsection.1.3}%
-\contentsline {subsection}{\numberline {1.4}Equation de la commande}{4}{subsection.1.4}%
-\contentsline {subsection}{\numberline {1.5}Condition d'optimalité sur $t_f$}{4}{subsection.1.5}%
-\contentsline {subsection}{\numberline {1.6}Formulation du problème aux deux bouts}{4}{subsection.1.6}%
+\contentsline {subsection}{\numberline {1.2}Initial and Final Conditions:}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Hamiltonian and Adjoint State Dynamics:}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Control Equation}{4}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Optimality Condition on $t_f$}{4}{subsection.1.5}%
+\contentsline {subsection}{\numberline {1.6}Two-Point Boundary Value Problem Formulation}{4}{subsection.1.6}%
 \contentsline {section}{\numberline {2}Implementation}{5}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Problem Data declaration}{5}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}System Dynamics Resolution function}{6}{subsection.2.2}%
